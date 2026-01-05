@@ -1,5 +1,11 @@
 # Changelog
 
+## @jsquash/resize@2.1.1
+
+### Fixes
+
+- Updates magic-kernel rust dependency to version that includes a fix to ensure filters are applied in correct order on resize.
+
 ## @jsquash/resize@2.1.0
 
 ### Adds
