@@ -10,9 +10,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { EncodeOptions } from './codec/enc/jxl_enc.js';
 
-export { EncodeOptions };
+export type JxlBitDepth = 8 | 10 | 12 | 16 | 32;
+export type JxlInputType = 'u8' | 'u16' | 'f32';
+export type JxlColorSpace =
+  | 'srgb'
+  | 'display-p3'
+  | 'rec2020-pq'
+  | 'rec2020-hlg';
+
+export type JxlInputBuffer =
+  | Uint8Array
+  | Uint8ClampedArray
+  | Uint16Array
+  | Float32Array;
+
+export interface EncodeOptions {
+  effort: number;
+  quality: number;
+  progressive: boolean;
+  epf: number;
+  lossyPalette: boolean;
+  decodingSpeedTier: number;
+  photonNoiseIso: number;
+  lossyModular: boolean;
+  lossless: boolean;
+  /**
+   * Input bit depth.
+   *
+   * For `inputType: 'u16'`, the full `0..65535` range is used as container.
+   * `bitDepth` indicates semantic depth to the encoder (`10`, `12`, or `16`).
+   * No JS-side rescaling is performed.
+   */
+  bitDepth: JxlBitDepth;
+  inputType: JxlInputType;
+  colorSpace: JxlColorSpace;
+  premultipliedAlpha: boolean;
+  numChannels: 3 | 4;
+}
+
+export interface JxlImageDataLike<T extends JxlInputBuffer = JxlInputBuffer> {
+  data: T;
+  width: number;
+  height: number;
+  colorSpace?: PredefinedColorSpace;
+}
 
 export const label = 'JPEG XL (beta)';
 export const mimeType = 'image/jxl';
@@ -27,4 +69,9 @@ export const defaultOptions: EncodeOptions = {
   photonNoiseIso: 0,
   lossyModular: false,
   lossless: false,
+  bitDepth: 8,
+  inputType: 'u8',
+  colorSpace: 'srgb',
+  premultipliedAlpha: false,
+  numChannels: 4,
 };

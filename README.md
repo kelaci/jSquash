@@ -38,17 +38,47 @@ const formData = new FormData(formEl);
 const imageData = await decode(await formData.get('image').arrayBuffer());
 ```
 
-### encode(data: ImageData, options?: EncodeOptions): Promise<ArrayBuffer>
+### encode(data: ImageData | JxlImageDataLike, options?: EncodeOptions): Promise<ArrayBuffer>
 
-Encodes raw RGB image data to JPEG format and resolves to an ArrayBuffer of binary data.
+Encodes raw RGB(A) image data to JPEG XL format and resolves to an `ArrayBuffer`.
 
 #### data
-Type: `ImageData`
+Type: `ImageData | JxlImageDataLike`
+
+`JxlImageDataLike` is an object with:
+- `data: Uint8Array | Uint8ClampedArray | Uint16Array | Float32Array`
+- `width: number`
+- `height: number`
+- `colorSpace?: 'srgb' | 'display-p3'`
 
 #### options
 Type: `Partial<EncodeOptions>`
 
 The JPEG XL encoder options for the output image. [See default values](./meta.ts).
+
+Additional high bit-depth options:
+- `bitDepth?: 8 | 10 | 12 | 16 | 32`
+- `inputType?: 'u8' | 'u16' | 'f32'`
+- `colorSpace?: 'srgb' | 'display-p3' | 'rec2020-pq' | 'rec2020-hlg'`
+- `premultipliedAlpha?: boolean`
+- `numChannels?: 3 | 4`
+
+Supported combinations:
+
+| inputType | bitDepth | Supported |
+| --- | --- | --- |
+| `u8` | `8` | Yes |
+| `u16` | `10` | Yes |
+| `u16` | `12` | Yes |
+| `u16` | `16` | Yes |
+| `f32` | `32` | Yes |
+| `u8` | `10/12` | No (throws) |
+| `u16` | `8` | No (throws) |
+
+Range convention for `u16`:
+
+For `inputType: 'u16'`, the full `0..65535` range is used as container.
+`bitDepth` (`10/12/16`) indicates semantic precision. No JS-side rescaling is applied.
 
 #### Example
 ```js
@@ -67,6 +97,24 @@ async function loadImage(src) {
 
 const rawImageData = await loadImage('/example.png');
 const jpegBuffer = await encode(rawImageData);
+```
+
+#### 10-bit / 12-bit Example
+```js
+import { encode } from '@jsquash/jxl';
+
+const width = 1920;
+const height = 1080;
+const data16 = new Uint16Array(width * height * 4); // RGBA container 0..65535
+
+const jxlBuffer = await encode(
+  { data: data16, width, height },
+  {
+    inputType: 'u16',
+    bitDepth: 10,
+    colorSpace: 'display-p3',
+  },
+);
 ```
 
 #### Lossless Example

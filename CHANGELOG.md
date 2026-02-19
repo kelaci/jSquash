@@ -1,5 +1,21 @@
 # Changelog
 
+## @jsquash/jxl@Unreleased
+
+### Adds
+
+- Adds native input type and bit depth controls for encoding:
+  - `inputType: 'u8' | 'u16' | 'f32'`
+  - `bitDepth: 8 | 10 | 12 | 16 | 32`
+  - `colorSpace: 'srgb' | 'display-p3' | 'rec2020-pq' | 'rec2020-hlg'`
+  - `premultipliedAlpha`
+  - `numChannels: 3 | 4`
+
+### Changes
+
+- Throws explicit errors for unsupported input combinations instead of falling back.
+- Documents `u16` range convention: container range is `0..65535`, `bitDepth` carries semantic precision.
+
 ## @jsquash/jxl@1.3.0
 
 ### Adds
