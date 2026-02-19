@@ -8,6 +8,11 @@ export interface EncodeOptions {
   photonNoiseIso: number;
   lossyModular: boolean;
   lossless: boolean;
+  bitDepth: number;
+  inputType: number;
+  colorSpace: number;
+  premultipliedAlpha: boolean;
+  numChannels: number;
 }
 
 export interface JXLModule extends EmscriptenWasm.Module {

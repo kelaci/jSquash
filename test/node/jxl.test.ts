@@ -30,6 +30,84 @@ test('can successfully encode image', async (t) => {
   t.assert(data instanceof ArrayBuffer);
 });
 
+test('can successfully encode u16 input with 10-bit semantic depth', async (t) => {
+  const encodeWasmModule = await importWasmModule(
+    'node_modules/@jsquash/jxl/codec/enc/jxl_enc.wasm',
+  );
+  await initEncode(encodeWasmModule);
+
+  const width = 8;
+  const height = 8;
+  const pixels = new Uint16Array(width * height * 4);
+  for (let i = 0; i < pixels.length; i++) {
+    pixels[i] = (i * 257) % 65536;
+  }
+
+  const encoded = await encode(
+    { data: pixels, width, height },
+    {
+      inputType: 'u16',
+      bitDepth: 10,
+      colorSpace: 'display-p3',
+    },
+  );
+
+  t.assert(encoded instanceof ArrayBuffer);
+  t.true(encoded.byteLength > 0);
+});
+
+test('throws for unsupported u8 + 10-bit combination', async (t) => {
+  const encodeWasmModule = await importWasmModule(
+    'node_modules/@jsquash/jxl/codec/enc/jxl_enc.wasm',
+  );
+  await initEncode(encodeWasmModule);
+
+  await t.throwsAsync(
+    () =>
+      encode(
+        {
+          data: new Uint8ClampedArray(4 * 4 * 4),
+          width: 4,
+          height: 4,
+        },
+        {
+          inputType: 'u8',
+          bitDepth: 10,
+        } as any,
+      ),
+    {
+      message:
+        'Unsupported combination: inputType "u8" only supports bitDepth 8.',
+    },
+  );
+});
+
+test('throws for unsupported u16 + 8-bit combination', async (t) => {
+  const encodeWasmModule = await importWasmModule(
+    'node_modules/@jsquash/jxl/codec/enc/jxl_enc.wasm',
+  );
+  await initEncode(encodeWasmModule);
+
+  await t.throwsAsync(
+    () =>
+      encode(
+        {
+          data: new Uint16Array(4 * 4 * 4),
+          width: 4,
+          height: 4,
+        },
+        {
+          inputType: 'u16',
+          bitDepth: 8,
+        } as any,
+      ),
+    {
+      message:
+        'Unsupported combination: inputType "u16" only supports bitDepth 10, 12 or 16.',
+    },
+  );
+});
+
 test('can successfully encode and decode lossless image', async (t) => {
   const [encodeWasmModule, decodeWasmModule] = await Promise.all([
     importWasmModule('node_modules/@jsquash/jxl/codec/enc/jxl_enc.wasm'),
