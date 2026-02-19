@@ -17,6 +17,22 @@ npm install --save @jsquash/jxl
 # Or your favourite package manager alternative
 ```
 
+## Fork Publish Workflow
+
+To publish this package from a fork under your own npm name:
+
+```shell
+cd packages/jxl
+FORK_PACKAGE_NAME=@kelaci/jsquash-jxl \
+FORK_PACKAGE_VERSION=1.3.0-kelaci.0 \
+FORK_PACKAGE_REPOSITORY=kelaci/jSquash \
+FORK_NPM_TAG=fork \
+npm run publish:fork
+```
+
+This runs `build`, rewrites `dist/package.json` for your fork package name/version,
+and publishes from `dist`.
+
 ## Usage
 
 Note: You will need to either manually include the wasm files from the codec directory or use a bundler like WebPack or Rollup to include them in your app/server.
