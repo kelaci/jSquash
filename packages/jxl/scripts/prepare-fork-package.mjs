@@ -12,10 +12,10 @@ const raw = await readFile(distPackagePath, 'utf8');
 const pkg = JSON.parse(raw);
 
 const baseVersion = pkg.version;
-const packageName = process.env.FORK_PACKAGE_NAME ?? '@kelaci/jsquash-jxl';
+const packageName = process.env.FORK_PACKAGE_NAME ?? '@lacinak/jsquash-jxl';
 const packageVersion =
-  process.env.FORK_PACKAGE_VERSION ?? `${baseVersion}-kelaci.0`;
-const repository = process.env.FORK_PACKAGE_REPOSITORY ?? 'kelaci/jSquash';
+  process.env.FORK_PACKAGE_VERSION ?? `${baseVersion}-lacinak.0`;
+const repository = process.env.FORK_PACKAGE_REPOSITORY ?? 'lacinak/jSquash';
 
 pkg.name = packageName;
 pkg.version = packageVersion;

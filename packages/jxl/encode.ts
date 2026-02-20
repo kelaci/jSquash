@@ -307,17 +307,26 @@ function validateInputCombination(
   bitDepth: JxlBitDepth,
 ): void {
   if (inputType === 'u8' && bitDepth !== 8) {
-    throw new Error('Unsupported combination: inputType "u8" only supports bitDepth 8.');
+    throw new Error(
+      'Unsupported combination: inputType "u8" only supports bitDepth 8.',
+    );
   }
 
-  if (inputType === 'u16' && bitDepth !== 10 && bitDepth !== 12 && bitDepth !== 16) {
+  if (
+    inputType === 'u16' &&
+    bitDepth !== 10 &&
+    bitDepth !== 12 &&
+    bitDepth !== 16
+  ) {
     throw new Error(
       'Unsupported combination: inputType "u16" only supports bitDepth 10, 12 or 16.',
     );
   }
 
   if (inputType === 'f32' && bitDepth !== 32) {
-    throw new Error('Unsupported combination: inputType "f32" only supports bitDepth 32.');
+    throw new Error(
+      'Unsupported combination: inputType "f32" only supports bitDepth 32.',
+    );
   }
 }
 
